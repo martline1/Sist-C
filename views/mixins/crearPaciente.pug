@@ -1,0 +1,8 @@
+mixin crearPaciente(paciente = {})
+    form.agregar-proyecto(action=`/nuevo-paciente/${paciente.id ||  ''}` method="POST")
+        .campo 
+            .caja-info
+                label(for="nombre") Nuevo paciente
+                input(type="text" value=paciente.nombre id="nombre" name="nombre" placeholder="Nombre Paciente") 
+        .campo.enviar
+            input(type="submit" value=`${paciente.nombre ? 'Guardar' : 'Agregar'}` class="boton")
