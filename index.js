@@ -1,57 +1,41 @@
-const express = require ('express');
-const routes = require('./routes');
-const path = require('path');
-const bodyParser = require('body-parser');
-const expressValidator = require('express-validator');
+const express          = require ("express");
+const path             = require("path");
+const bodyParser       = require("body-parser");
+const expressValidator = require("express-validator");
 
-//helper con algunas funciones
+// Import Own Components
+const routes  = require("./routes");
+const helpers = require("./helpers");
+const db      = require("./config/db");
 
-const helpers = require('./helpers');
-
-
-// crar concexion a la BD
-const db = require('./config/db');
+const port = 3000;
 
 //importar modelo
-require('./models/Pacientes');
-require('./models/Expedientes');
+require("./models/Pacientes");
+require("./models/Expedientes");
 
 db.sync()
-    .then(() => console.log('Conectado al servidor'))
+    .then(() => console.log("Conectado a la base de datos"))
     .catch(error => console.log(error));
-
-
-
-//crar ina app de expreess
 
 const app = express();
 
-app.use(express.static('public'));
+app.listen(port, () => console.log(`[Server] Listening on port ${port}`));
+
+app.use(express.static("public"));
+app.use(bodyParser.urlencoded({ extended : true }));
 
 // habilitar pug
-app.set('view engine','pug');
+app.set("view engine","pug");
 
 //añadir carpeta vistas
-app.set('views', path.join(__dirname, './views'));
+app.set("views", path.join(__dirname, "./views"));
 
-
-
-//ásar vadump a la app
-
+// ásar vadump a la app
 app.use((req,res, next)=>{
     res.locals.vardump = helpers.vardump;
     next();
 });
 
-//habiliar bodyparser para leer consola 
-app.use(bodyParser.urlencoded({extended:true}));
 
-
-
-
-app.use('/',routes());
-//puerto para eschuchar
-
-app.listen(3000);
-
-
+app.use("/", routes());
